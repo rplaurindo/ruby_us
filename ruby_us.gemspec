@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["rafaelplaurindo@gmail.com"]
 
   spec.summary       = %q{Sumary}
-  spec.description   = %q{Provides a way to convert values between the units of mass and volume used in commercial trades.}
+  spec.description   = %q{Some, but useful extensions for the Ruby developers.}
   spec.homepage      = "https://rubygems.org/gems/ruby_us"
   spec.license       = "MIT"
 
