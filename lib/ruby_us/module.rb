@@ -35,7 +35,7 @@ class Module
     const_get constant if defines?(constant)
   end
 
-  def collect counted=[], collected=[], &block
+  def nestings counted=[], collected=[], &block
     trail = self.to_s
 
     constants.each do |const_name|
@@ -50,16 +50,16 @@ class Module
           counted << constant_sym
 
           if (constant.is_a?(Module) || constant.is_a?(Class))
-            constant.collect(counted, collected, &block) if constant.has_constants?
-            value = block.call constant
+            constant.nestings(counted, collected, &block) if constant.has_constants?
+            value = block_given? ? block.call(constant) : constant
           end
 
-          collected << value if value
+          collected << value
         end
       rescue Exception
       end
 
-    end if block_given?
+    end
 
     collected
   end

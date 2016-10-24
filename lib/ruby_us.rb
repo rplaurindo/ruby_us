@@ -1,16 +1,21 @@
 module RubyUs
+  extend self
 
-  Dir[File.join(lib_path, "**/*.rb")].each do |file|
-    require file
+  def root_path
+    File.expand_path("../..", __FILE__)
   end
 
-  private
-    def root_path
-      File.expand_path("../..", __FILE__)
-    end
+  def lib_path
+    File.join(root_path, "lib")
+  end
 
-    def lib_path
-      File.join(root_path, "lib")
-    end
+  def spec_name
+    File.basename __FILE__, ".rb"
+  end
+  private :root_path, :lib_path, :spec_name
+
+  Dir[File.join(lib_path, spec_name, "**/*.rb")].each do |file|
+    require file
+  end
 
 end
