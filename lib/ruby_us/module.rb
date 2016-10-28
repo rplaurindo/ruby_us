@@ -4,13 +4,7 @@ Config = RbConfig
 
 class Module
 
-  def deconstantize
-    ancestor = ancestors.first
-    splitted_trail = ancestor.to_s.split("::")
-    trail_name = splitted_trail.slice(0, splitted_trail.length - 1).join("::")
-
-    const_get(trail_name) if !trail_name.empty? && self.to_s != trail_name
-  end
+  extend self
 
   def defines? constant, verbose=false
     constant = constant.to_s
@@ -22,6 +16,14 @@ class Module
       $stderr.puts "Exception recovered when trying to check if the constant \"#{constant}\" is defined: #{e}" if verbose
       false
     end unless constant.empty?
+  end
+
+  def deconstantize
+    ancestor = ancestors.first
+    splitted_trail = ancestor.to_s.split("::")
+    trail_name = splitted_trail.slice(0, splitted_trail.length - 1).join("::")
+
+    const_get(trail_name) if !trail_name.empty? && self.to_s != trail_name
   end
 
   def has_constants?
