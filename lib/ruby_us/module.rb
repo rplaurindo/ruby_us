@@ -28,8 +28,8 @@ class Module
     true if constants.any?
   end
 
-  def demodulize constant
-    splitted_trail = constant.to_s.split("::")
+  def demodulize
+    splitted_trail = self.to_s.split("::")
     constant = splitted_trail.last
 
     const_get constant if defines?(constant)
