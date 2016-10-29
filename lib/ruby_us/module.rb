@@ -4,6 +4,14 @@ Config = RbConfig
 
 class Module
 
+  def demodulize
+    splitted_trail = self.to_s.split("::")
+    constant = splitted_trail.last
+
+    const_get constant if defines?(constant)
+  end
+  private :demodulize
+
   def defines? constant, verbose=false
     constant = constant.to_s
     # try
@@ -26,13 +34,6 @@ class Module
 
   def has_constants?
     true if constants.any?
-  end
-
-  def demodulize
-    splitted_trail = self.to_s.split("::")
-    constant = splitted_trail.last
-
-    const_get constant if defines?(constant)
   end
 
   def nestings counted=[], &block
