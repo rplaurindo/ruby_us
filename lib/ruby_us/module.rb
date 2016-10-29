@@ -4,8 +4,6 @@ Config = RbConfig
 
 class Module
 
-  extend self
-
   def defines? constant, verbose=false
     constant = constant.to_s
     # try
