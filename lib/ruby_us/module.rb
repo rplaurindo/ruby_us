@@ -18,7 +18,7 @@ class Module
 
     # try
     begin
-      trail = Module.const_get(trail_name) if Object.send(:const_defined?, trail_name)
+      trail = const_get(trail_name) if Object.send(:const_defined?, trail_name)
       splitted_trail.slice(1, splitted_trail.length - 1).each do |constant_name|
         trail = trail.send(:const_defined?, constant_name) ? trail.const_get(constant_name) : nil
       end
