@@ -13,14 +13,19 @@ class Module
   private :demodulize
 
   def defines? constant, verbose=false
-    constant = constant.to_s
+    splitted_trail = constant.split("::")
+    trail_name = splitted_trail.first
+
     # try
     begin
-      true if Object.send(:const_defined?, constant)
+      trail = Module.const_get(trail_name) if Object.send(:const_defined?, trail_name)
+      splitted_trail.slice(1, splitted_trail.length - 1).each do |constant_name|
+        trail = trail.send(:const_defined?, constant_name) ? trail.const_get(constant_name) : nil
+      end
+      true if trail
     # catch (e)
     rescue Exception => e
       $stderr.puts "Exception recovered when trying to check if the constant \"#{constant}\" is defined: #{e}" if verbose
-      false
     end unless constant.empty?
   end
 
@@ -55,7 +60,6 @@ class Module
             collected << value if value
             collected.concat constant.nestings(counted, &block) if constant.has_constants?
           end
-
         end
       rescue Exception
       end
