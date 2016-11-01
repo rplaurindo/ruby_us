@@ -54,7 +54,6 @@ class Module
         constant_sym = constant.to_s.to_sym
         if constant && !counted.include?(constant_sym)
           counted << constant_sym
-
           if (constant.is_a?(Module) || constant.is_a?(Class))
             value = block_given? ? block.call(constant) : constant
             collected << value if value

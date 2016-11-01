@@ -12,10 +12,10 @@ class String
 
   def constantize
     if Module.defines?(self)
-      Module.send(:const_get, self)
+      Module.const_get self
     else
-      demodulized = Module.demodulize(self).to_s
-      Module.send(:const_get, demodulized) if Module.defines?(demodulized)
+      demodulized = self.split("::").last
+      Module.const_get(demodulized) if Module.defines?(demodulized)
     end
   end
 
