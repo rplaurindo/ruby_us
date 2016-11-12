@@ -44,6 +44,7 @@ class Module
   def nestings counted=[], &block
     trail = self.to_s
     collected = []
+    recursivityQueue = []
 
     constants.each do |const_name|
       const_name = const_name.to_s
@@ -57,12 +58,21 @@ class Module
           if (constant.is_a?(Module) || constant.is_a?(Class))
             value = block_given? ? block.call(constant) : constant
             collected << value if value
-            collected.concat constant.nestings(counted, &block) if constant.has_constants?
+
+            recursivityQueue.push({
+              constant: constant,
+              counted: counted,
+              block: block
+            }) if constant.has_constants?
           end
         end
       rescue Exception
       end
 
+    end
+
+    recursivityQueue.each do |data|
+      collected.concat data[:constant].nestings(data[:counted], &data[:block])
     end
 
     collected
