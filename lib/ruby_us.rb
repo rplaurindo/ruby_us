@@ -14,6 +14,10 @@ module RubyUs
   end
   private :root_path, :lib_path, :spec_name
 
+  def timestamp
+    Time.now.strftime "%y%m%d%H%M%S%L%N"
+  end
+
   Dir[File.join(lib_path, spec_name, "**/*.rb")].each do |file|
     require file
   end

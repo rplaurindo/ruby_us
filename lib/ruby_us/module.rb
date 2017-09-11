@@ -1,7 +1,3 @@
-Object.send :remove_const, :Config
-Config = RbConfig
-
-
 class Module
 
   def demodulize
@@ -11,6 +7,14 @@ class Module
     const_get constant if defines?(constant)
   end
   private :demodulize
+
+  def deconstantize
+    ancestor = ancestors.first
+    splitted_trail = ancestor.to_s.split("::")
+    trail_name = splitted_trail.slice(0, splitted_trail.length - 1).join("::")
+
+    const_get(trail_name) if !trail_name.empty? && self.to_s != trail_name
+  end
 
   def defines? constant, verbose=false
     splitted_trail = constant.split("::")
@@ -29,53 +33,46 @@ class Module
     end unless constant.empty?
   end
 
-  def deconstantize
-    ancestor = ancestors.first
-    splitted_trail = ancestor.to_s.split("::")
-    trail_name = splitted_trail.slice(0, splitted_trail.length - 1).join("::")
-
-    const_get(trail_name) if !trail_name.empty? && self.to_s != trail_name
-  end
 
   def has_constants?
     true if constants.any?
   end
 
-  def nestings counted=[], &block
-    trail = self.to_s
-    collected = []
-    recursivityQueue = []
+  # def nestings counted=[], &block
+  #   trail = self.to_s
+  #   collected = []
+  #   recursivityQueue = []
 
-    constants.each do |const_name|
-      const_name = const_name.to_s
-      const_for_try = "#{trail}::#{const_name}"
-      constant = const_for_try.constantize
+  #   constants.each do |const_name|
+  #     const_name = const_name.to_s
+  #     const_for_try = "#{trail}::#{const_name}"
+  #     constant = const_for_try.constantize
 
-      begin
-        constant_sym = constant.to_s.to_sym
-        if constant && !counted.include?(constant_sym)
-          counted << constant_sym
-          if (constant.is_a?(Module) || constant.is_a?(Class))
-            value = block_given? ? block.call(constant) : constant
-            collected << value if value
+  #     begin
+  #       constant_sym = constant.to_s.to_sym
+  #       if constant && !counted.include?(constant_sym)
+  #         counted << constant_sym
+  #         if (constant.is_a?(Module) || constant.is_a?(Class))
+  #           value = block_given? ? block.call(constant) : constant
+  #           collected << value if value
 
-            recursivityQueue.push({
-              constant: constant,
-              counted: counted,
-              block: block
-            }) if constant.has_constants?
-          end
-        end
-      rescue Exception
-      end
+  #           recursivityQueue.push({
+  #             constant: constant,
+  #             counted: counted,
+  #             block: block
+  #           }) if constant.has_constants?
+  #         end
+  #       end
+  #     rescue Exception
+  #     end
 
-    end
+  #   end
 
-    recursivityQueue.each do |data|
-      collected.concat data[:constant].nestings(data[:counted], &data[:block])
-    end
+  #   recursivityQueue.each do |data|
+  #     collected.concat data[:constant].nestings(data[:counted], &data[:block])
+  #   end
 
-    collected
-  end
+  #   collected
+  # end
 
 end
