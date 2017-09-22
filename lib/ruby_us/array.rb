@@ -6,8 +6,6 @@ class Array
     end.uniq
   end
 
-  # private :intersect
-
   def intersections *lists
     all = lists.push(self)
 
@@ -19,13 +17,9 @@ class Array
 
     intersections = smaller.intersection(all.first)
 
-    # ver possibilidade de usar reduce
-    lists.each do |list|
+    lists.reduce do |list|
       intersections = intersections.intersection list
     end
-    intersections
   end
 
 end
-
-# p [1, 2, 3, 1].intersections [6, 1, 2, 5, 3], [3, 1, 2]
