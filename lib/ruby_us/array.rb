@@ -1,16 +1,24 @@
 class Array
 
   def intersection list
-    self.select do |item|
-      list.include? item
+    all = [list].push self
+
+    smaller = (all = all.sort do |first, second|
+      first.count <=> second.count
+    end).first
+
+    larger = all[1]
+
+    smaller.select do |item|
+      larger.include? item
     end.uniq
   end
 
   def intersections *lists
     all = lists.push(self)
 
-    smaller = all.sort do |a, b|
-      a.count <=> b.count
+    smaller = all.sort do |first, second|
+      first.count <=> second.count
     end.first
 
     all.delete smaller
