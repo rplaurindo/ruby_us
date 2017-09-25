@@ -1,7 +1,7 @@
 class Array
 
-  def intersection list
-    all = [list].push self
+  def intersection set
+    all = [self, set]
 
     smaller = (all = all.sort do |first, second|
       first.count <=> second.count
@@ -14,8 +14,8 @@ class Array
     end.uniq
   end
 
-  def intersections *lists
-    all = lists.push(self)
+  def intersections *sets
+    all = sets.push(self)
 
     smaller = all.sort do |first, second|
       first.count <=> second.count
@@ -25,7 +25,7 @@ class Array
 
     intersections = smaller.intersection(all.first)
 
-    lists.reduce do |list|
+    sets.reduce do |list|
       intersections = intersections.intersection list
     end
   end
